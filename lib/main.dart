@@ -21,10 +21,8 @@ void main() {
   
   LocationsService service = LocationsService.instance;
 
-  // Fetch locations
   List<Location> locations = service.getLocations();
 
-  // Print the locations
   for (var location in locations) {
     print("City: ${location.name}, Country: ${location.country.name}");
   }
@@ -32,10 +30,8 @@ void main() {
   // Initialize the RidesService with MockRidesRepository
   RidesService.initialize(MockRidesRepository());
 
-  // Access the service instance
   RidesService service1 = RidesService.instance;
 
-  // Define a RidePreference and a RidesFilter
   RidePreference preference = RidePreference(
     departure: Location(name: "Battambang", country: Country.cambodia),
     departureDate: DateTime.now().add(Duration(hours: 1)),
@@ -44,10 +40,8 @@ void main() {
   );
   RidesFilter filter = RidesFilter(acceptPets: true);  
 
-  // Fetch rides
   List<Ride> rides = service1.getRides(preference, filter);
 
-  // Print the rides
   for (var ride in rides) {
     print(ride);
   }

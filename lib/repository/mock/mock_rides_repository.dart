@@ -9,51 +9,56 @@ import '../../service/rides_service.dart';
 class MockRidesRepository extends RidesRepository{
 
   final List<Ride> _rides = [
+    
     Ride(
       departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now(),
+      departureDate: DateTime.now().subtract(Duration(hours: 5, minutes: 30)), 
       arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().add(Duration(hours: 2)),
+      arrivalDateTime: DateTime.now().subtract(Duration(hours: 3, minutes: 30)),  
       driver: User(firstName: "Kannika", lastName: "Phat", email: "kannika@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
       availableSeats: 2,
       pricePerSeat: 20.0,
-      acceptPets: false,  // Added pet acceptance
+      acceptPets: false,
     ),
+   
     Ride(
       departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().add(Duration(hours: 12)),
+      departureDate: DateTime.now().add(Duration(hours: 12, minutes: 30)),
       arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().add(Duration(hours: 14)),
+      arrivalDateTime: DateTime.now().add(Duration(hours: 14, minutes: 30)),  
       driver: User(firstName: "Chaylim", lastName: "Lim", email: "chaylim@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
       availableSeats: 0,
       pricePerSeat: 20.0,
       acceptPets: false,
     ),
+    
     Ride(
       departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().subtract(Duration(hours: 1)),
+      departureDate: DateTime.now().subtract(Duration(hours: 6)),  
       arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().add(Duration(hours: 2)),
+      arrivalDateTime: DateTime.now().subtract(Duration(hours: 3)), 
       driver: User(firstName: "Mengtech", lastName: "Sok", email: "mengtech@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
       availableSeats: 1,
       pricePerSeat: 20.0,
-      acceptPets: false,
+      acceptPets: true,
     ),
+    
     Ride(
       departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().add(Duration(hours: 12)),
+      departureDate: DateTime.now().add(Duration(hours: 12, minutes: 30)),  
       arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().add(Duration(hours: 14)),
+      arrivalDateTime: DateTime.now().add(Duration(hours: 14, minutes: 30)),  
       driver: User(firstName: "Limhao", lastName: "Phan", email: "limhao@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
       availableSeats: 2,
       pricePerSeat: 20.0,
-      acceptPets: true,  // Added pet acceptance
+      acceptPets: false,
     ),
+ 
     Ride(
       departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().subtract(Duration(hours: 1)),
+      departureDate: DateTime.now().subtract(Duration(hours: 6)),  
       arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().add(Duration(hours: 2)),
+      arrivalDateTime: DateTime.now().subtract(Duration(hours: 3)),  
       driver: User(firstName: "Sovanda", lastName: "Vann", email: "sovanda@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
       availableSeats: 1,
       pricePerSeat: 20.0,
@@ -68,8 +73,7 @@ class MockRidesRepository extends RidesRepository{
     // Apply filtering by departure location, arrival location, and requested seats
     filteredRides = filteredRides.where((ride) {
       return ride.departureLocation.name == preference.departure.name &&
-          ride.arrivalLocation.name == preference.arrival.name &&
-          ride.departureDate.isAfter(preference.departureDate) &&  
+          ride.arrivalLocation.name == preference.arrival.name &&  
           ride.availableSeats >= preference.requestedSeats;
     }).toList();
 
@@ -79,5 +83,6 @@ class MockRidesRepository extends RidesRepository{
     }
 
     return filteredRides;
-  }
+ }
 }
+ 

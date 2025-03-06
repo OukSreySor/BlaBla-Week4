@@ -7,10 +7,12 @@ import '../../ride_pref/widgets/ride_pref_form.dart';
 
 class RidePrefModal extends StatefulWidget {
 
+   final RidePreference currentPreference;
   const RidePrefModal({
 
-    super.key,     
-     // TODO 7 : We should pass the current prefs to this moda; 
+    super.key, 
+     // TODO 7 : We should pass the current prefs to this modal; 
+    required this.currentPreference,    
   });
  
   @override
@@ -24,6 +26,7 @@ class _RidePrefModalState extends State<RidePrefModal> {
 
   void onSubmit(RidePreference newPreference) {
       // TODO 9 : We should pop this modal, with the new current preference
+    Navigator.of(context).pop(newPreference);
   }
 
   @override
@@ -51,7 +54,7 @@ class _RidePrefModalState extends State<RidePrefModal> {
               child: Padding(
             padding: const EdgeInsets.all(10),
             child: RidePrefForm(
-              initialPreference: null,        // TODO 7 : The form should be displayed with the modal current prefs
+              initialPreference: widget.currentPreference,        // TODO 7 : The form should be displayed with the modal current prefs
               onSubmit: onSubmit,
             ),
           )),

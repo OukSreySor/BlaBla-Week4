@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import '../../dummy_data/dummy_data.dart';
 import '../../model/ride/ride.dart';
 import '../../model/ride_pref/ride_pref.dart';
+import '../../service/ride_prefs_service.dart';
 import '../../service/rides_service.dart';
 import '../../theme/theme.dart';
- 
 import 'widgets/ride_pref_bar.dart';
+import 'widgets/ride_pref_modal.dart';
 import 'widgets/rides_tile.dart';
 
 ///
@@ -20,10 +21,18 @@ class RidesScreen extends StatefulWidget {
 }
 
 class _RidesScreenState extends State<RidesScreen> {
- 
-  RidePreference currentPreference  = fakeRidePrefs[0];   // TODO 1 :  We should get it from the service
+  late RidePreference currentPreference;
+  @override
+  void initState() {
+    super.initState();
 
-  List<Ride> get matchingRides => RidesService.getRidesFor(currentPreference);
+   // Get the latest preference from RidePrefService
+    currentPreference = RidePrefService.instance.currentPreference ?? fakeRidePrefs[0]; 
+  }
+
+  //RidePreference currentPreference  = fakeRidePrefs[0];   // TODO 1 :  We should get it from the service
+
+  List<Ride> get matchingRides => RidesService.getRidesForCurrentPreference();
 
   void onBackPressed() {
     Navigator.of(context).pop();     //  Back to the previous view
@@ -35,8 +44,25 @@ class _RidesScreenState extends State<RidesScreen> {
         // TODO 9 :  After pop, we should get the new current pref from the modal 
 
         // TODO 10 :  Then we should update the service current pref,   and update the view
-  }
 
+    // Show the RidePrefModal and pass the current preference
+    RidePreference? updatedPreference = await showDialog<RidePreference>(
+      context: context,
+      builder: (BuildContext context) {
+        return RidePrefModal(currentPreference: currentPreference); 
+      },
+    );
+
+    if (updatedPreference != null) {
+      // Update the state with the new preference 
+      setState(() {
+        currentPreference = updatedPreference;
+        // Ensure the service is updated so other screens also get the correct data
+        RidePrefService.instance.setCurrentPreference(updatedPreference);
+      });
+    }
+  }
+   
   void onFilterPressed() {
   }
 

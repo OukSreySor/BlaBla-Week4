@@ -4,6 +4,7 @@ import '../dummy_data/dummy_data.dart';
 import '../model/ride/ride.dart';
 import '../model/ride_pref/ride_pref.dart';
 import '../repository/mock/rides_repository.dart';
+import 'ride_prefs_service.dart';
 
 ////
 ///   This service handles:
@@ -38,17 +39,20 @@ class RidesService {
     return rides;
   }
 
+  
+  // Update RidesService to use RidePrefService
   static List<Ride> availableRides = fakeRides;  
+  static List<Ride> getRidesForCurrentPreference() {
+    // Get the current preference from RidePrefService
+    RidePreference? preferences = RidePrefService.instance.currentPreference;
+    if (preferences == null) return [];
 
-
-  ///
-  ///  Return the relevant rides, given the passenger preferences
-  ///
-  static List<Ride> getRidesFor(RidePreference preferences) {
- 
-    // For now, just a test
-    return availableRides.where( (ride) => ride.departureLocation == preferences.departure && ride.arrivalLocation == preferences.arrival).toList();
+    return availableRides.where((ride) =>
+        ride.departureLocation == preferences.departure &&
+        ride.arrivalLocation == preferences.arrival).toList();
   }
+
+
 }
 
 class RidesFilter {

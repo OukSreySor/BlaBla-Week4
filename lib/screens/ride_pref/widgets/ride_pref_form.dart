@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../model/ride/locations.dart';
 import '../../../model/ride_pref/ride_pref.dart';
+import '../../../service/ride_prefs_service.dart';
 import '../../../theme/theme.dart';
 import '../../../utils/animations_util.dart';
 import '../../../utils/date_time_util.dart';
@@ -104,8 +105,10 @@ class _RidePrefFormState extends State<RidePrefForm> {
           departure: departure!,
           departureDate: departureDate,
           arrival: arrival!,
-          requestedSeats: requestedSeats);
-
+          requestedSeats: requestedSeats
+      );
+      // Store the new preference in the service
+      RidePrefService.instance.setCurrentPreference(newPreference);
       // 3 - Callback withg the new preference
       widget.onSubmit(newPreference);
     }

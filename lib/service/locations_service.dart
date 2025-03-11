@@ -1,6 +1,4 @@
 
-
-import '../dummy_data/dummy_data.dart';
 import '../model/ride/locations.dart';
 import '../repository/mock/locations_repository.dart';
 
@@ -27,12 +25,21 @@ class LocationsService {
   static void initialize(LocationsRepository repository) {
     if (_instance == null) {
       _instance = LocationsService._internal(repository);
+    } else {
+      throw Exception("Location Service is already initialized.");
     }
+
   }
 
   List<Location> getLocations() {
     return repository.getLocations();
   }
-  static const List<Location> availableLocations = fakeLocations; 
+
+  List<Location> getLocationsFor(String text) {
+    return repository
+        .getLocations()
+        .where((location) => 
+            location.name.toUpperCase().contains(text.toUpperCase())).toList();
+  }
  
 }

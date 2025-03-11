@@ -1,10 +1,9 @@
 
-
-import '../dummy_data/dummy_data.dart';
+import 'package:week_3_blabla_project/model/ride/ride_filter.dart';
 import '../model/ride/ride.dart';
 import '../model/ride_pref/ride_pref.dart';
 import '../repository/mock/rides_repository.dart';
-import 'ride_prefs_service.dart';
+
 
 ////
 ///   This service handles:
@@ -30,33 +29,14 @@ class RidesService {
   static void initialize(RidesRepository repository) {
     if (_instance == null) {
       _instance = RidesService._internal(repository);
+    } else {
+      throw Exception("Rides Service is already initialized.");
     }
   }
 
-  // Fetch rides with filter for pet acceptance
-  List<Ride> getRides(RidePreference preference, RidesFilter? filter) {
-    List<Ride> rides = repository.getRides(preference, filter);
-    return rides;
+  List<Ride> getRidesFor(RidePreference pref, RideFilter? filter) {
+    return repository.getRidesFor(pref, filter);
   }
-
-  
-  // Update RidesService to use RidePrefService
-  static List<Ride> availableRides = fakeRides;  
-  static List<Ride> getRidesForCurrentPreference() {
-    // Get the current preference from RidePrefService
-    RidePreference? preferences = RidePrefService.instance.currentPreference;
-    if (preferences == null) return [];
-
-    return availableRides.where((ride) =>
-        ride.departureLocation == preferences.departure &&
-        ride.arrivalLocation == preferences.arrival).toList();
-  }
-
 
 }
 
-class RidesFilter {
-  final bool acceptPets;
-
-  RidesFilter({required this.acceptPets});
-}

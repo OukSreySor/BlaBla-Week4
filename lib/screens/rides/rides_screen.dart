@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../dummy_data/dummy_data.dart';
 import '../../model/ride/ride.dart';
+import '../../model/ride/ride_filter.dart';
 import '../../model/ride_pref/ride_pref.dart';
 import '../../service/ride_prefs_service.dart';
 import '../../service/rides_service.dart';
 import '../../theme/theme.dart';
+import '../../utils/animations_util.dart';
 import 'widgets/ride_pref_bar.dart';
 import 'widgets/ride_pref_modal.dart';
 import 'widgets/rides_tile.dart';
@@ -21,47 +22,36 @@ class RidesScreen extends StatefulWidget {
 }
 
 class _RidesScreenState extends State<RidesScreen> {
-  late RidePreference currentPreference;
-  @override
-  void initState() {
-    super.initState();
-
-   // Get the latest preference from RidePrefService
-    currentPreference = RidePrefService.instance.currentPreference ?? fakeRidePrefs[0]; 
-  }
-
-  //RidePreference currentPreference  = fakeRidePrefs[0];   // TODO 1 :  We should get it from the service
-
-  List<Ride> get matchingRides => RidesService.getRidesForCurrentPreference();
+  
+  RidePreference get currentPreference => RidePrefService.instance.currentPreference!;
+ 
+  RideFilter currentFilter = RideFilter();
+ 
+  List<Ride> get matchingRides =>
+       RidesService.instance.getRidesFor(currentPreference, currentFilter);
 
   void onBackPressed() {
     Navigator.of(context).pop();     //  Back to the previous view
   } 
 
   void onPreferencePressed() async {
-        // TODO  6 : we should push the modal with the current pref
+     // Open a modal to edit the ride preferences
+     RidePreference? newPreference = await Navigator.of(context)
+         .push<RidePreference>(
+             AnimationUtils.createTopToBottomRoute(RidePrefModal(
+       initialPreference: currentPreference,
+     )));
+ 
+     if (newPreference != null) {
+       // 1 - Update the current preference
+       RidePrefService.instance.setCurrentPreference(newPreference);
+ 
+       // 2 -   Update the state   -- TODO MAKE IT WITH STATE MANAGEMENT
+       setState(() {});
+     }
 
-        // TODO 9 :  After pop, we should get the new current pref from the modal 
-
-        // TODO 10 :  Then we should update the service current pref,   and update the view
-
-    // Show the RidePrefModal and pass the current preference
-    RidePreference? updatedPreference = await showDialog<RidePreference>(
-      context: context,
-      builder: (BuildContext context) {
-        return RidePrefModal(currentPreference: currentPreference); 
-      },
-    );
-
-    if (updatedPreference != null) {
-      // Update the state with the new preference 
-      setState(() {
-        currentPreference = updatedPreference;
-        // Ensure the service is updated so other screens also get the correct data
-        RidePrefService.instance.setCurrentPreference(updatedPreference);
-      });
     }
-  }
+  
    
   void onFilterPressed() {
   }
@@ -94,4 +84,5 @@ class _RidesScreenState extends State<RidesScreen> {
       ),
     ));
   }
+
 }

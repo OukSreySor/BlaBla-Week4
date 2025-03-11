@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:week_3_blabla_project/service/rides_service.dart';
 import 'repository/mock/mock_locations_repository.dart';
 import 'repository/mock/mock_ride_preferences_repository.dart';
+import 'repository/mock/mock_rides_repository.dart';
 import 'screens/ride_pref/ride_pref_screen.dart';
 import 'service/locations_service.dart';
 import 'service/ride_prefs_service.dart';
@@ -13,7 +15,10 @@ void main() {
 
   // Initialize the LocationsService with MockLocationsRepository
   LocationsService.initialize(MockLocationsRepository());
-  
+
+  // Initialize the RidesService with MockRidesRepository
+  RidesService.initialize(MockRidesRepository());
+
   // 2- Run the UI
   runApp(const MyApp());
 }

@@ -41,12 +41,3 @@ class Location {
   }
 }
 
-///
-/// This model describes a street.
-///
-class Street {
-  final String name;
-  final Location city;
-
-  const Street({required this.name, required this.city});
-}

@@ -1,88 +1,63 @@
 import 'package:week_3_blabla_project/repository/mock/rides_repository.dart';
-
 import '../../model/ride/locations.dart';
 import '../../model/ride/ride.dart';
+import '../../model/ride/ride_filter.dart';
 import '../../model/ride_pref/ride_pref.dart';
 import '../../model/user/user.dart';
-import '../../service/rides_service.dart';
 
 class MockRidesRepository extends RidesRepository{
 
-  final List<Ride> _rides = [
-    
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().subtract(Duration(hours: 5, minutes: 30)), 
-      arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().subtract(Duration(hours: 3, minutes: 30)),  
-      driver: User(firstName: "Kannika", lastName: "Phat", email: "kannika@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
-      availableSeats: 2,
-      pricePerSeat: 20.0,
-      acceptPets: false,
-    ),
-   
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().add(Duration(hours: 12, minutes: 30)),
-      arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().add(Duration(hours: 14, minutes: 30)),  
-      driver: User(firstName: "Chaylim", lastName: "Lim", email: "chaylim@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
-      availableSeats: 0,
-      pricePerSeat: 20.0,
-      acceptPets: false,
-    ),
-    
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().subtract(Duration(hours: 6)),  
-      arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().subtract(Duration(hours: 3)), 
-      driver: User(firstName: "Mengtech", lastName: "Sok", email: "mengtech@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
-      availableSeats: 1,
-      pricePerSeat: 20.0,
-      acceptPets: true,
-    ),
-    
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().add(Duration(hours: 12, minutes: 30)),  
-      arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().add(Duration(hours: 14, minutes: 30)),  
-      driver: User(firstName: "Limhao", lastName: "Phan", email: "limhao@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
-      availableSeats: 2,
-      pricePerSeat: 20.0,
-      acceptPets: false,
-    ),
+  final List<Ride> _allRides = [];
+
+  MockRidesRepository() {
+    // FAKE USERS
+     User kanika = User(firstName: "Kannika");
+     User chaylim = User(firstName: "Chaylim");
  
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.cambodia),
-      departureDate: DateTime.now().subtract(Duration(hours: 6)),  
-      arrivalLocation: Location(name: "SiemReap", country: Country.cambodia),
-      arrivalDateTime: DateTime.now().subtract(Duration(hours: 3)),  
-      driver: User(firstName: "Sovanda", lastName: "Vann", email: "sovanda@bla.com", phone: "1234567890", profilePicture: "", verifiedProfile: true),
-      availableSeats: 1,
-      pricePerSeat: 20.0,
-      acceptPets: false,
-    ),
-  ];
+     // FAKE LOCATIONS
+     Location battambang = Location(name: "Battambang", country: Country.cambodia);
+     Location siemReap = Location(name: "Siem Reap", country: Country.cambodia);
+ 
+     // FAKE RIDES
+ 
+     Ride ride1 = Ride(
+         departureLocation: battambang,
+         departureDate: DateTime.now().copyWith(hour: 17, minute: 30),
+         arrivalLocation: siemReap,
+         arrivalDateTime: DateTime.now().copyWith(hour: 19, minute: 30),
+         driver: kanika,
+         availableSeats: 2,
+         pricePerSeat: 10);
+ 
+     Ride ride2 = Ride(
+         departureLocation: battambang,
+         departureDate: DateTime.now().copyWith(hour: 20, minute: 00),
+         arrivalLocation: siemReap,
+         arrivalDateTime: DateTime.now().copyWith(hour: 22, minute: 00),
+         driver: chaylim,
+         availableSeats: 0,
+         pricePerSeat: 10);
+ 
+     _allRides.addAll([ride1, ride2]);
+   
+  }
 
-   @override
-  List<Ride> getRides(RidePreference preference, RidesFilter? filter) {
-    List<Ride> filteredRides = _rides;
-
-    // Apply filtering by departure location, arrival location, and requested seats
-    filteredRides = filteredRides.where((ride) {
-      return ride.departureLocation.name == preference.departure.name &&
-          ride.arrivalLocation.name == preference.arrival.name &&  
-          ride.availableSeats >= preference.requestedSeats;
-    }).toList();
-
-    // Apply filtering by pet acceptance
-    if (filter != null) {
-      filteredRides = filteredRides.where((ride) => ride.acceptPets == filter.acceptPets).toList();
-    }
-
-    return filteredRides;
+  @override
+  List<Ride> getRidesFor(RidePreference preference, RideFilter? filter) {
+     return _allRides
+         .where((ride) =>
+ 
+             // Filter on departure / arrival
+             ride.departureLocation == preference.departure &&
+             ride.arrivalLocation == preference.arrival &&
+ 
+             // Filter on pets if required
+             (filter != null && filter.onlyPets ? ride.acceptPets : true) &&
+ 
+             // Filter on rides with available seat only
+             ride.availableSeats > 0)
+         .toList();
+   }
  }
-}
+
  
